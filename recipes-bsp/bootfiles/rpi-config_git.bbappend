@@ -10,4 +10,9 @@ do_deploy_append () {
         echo "# Use mini-uart" >> ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}/config.txt
         echo "uart_2ndstage=1" >> ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}/config.txt
     fi
+
+    if [ "${RPI_CONFIG_STRIP}" = "1" ]; then
+        sed -i '/^#/d' ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}/config.txt
+        sed -i '/^$/d' ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}/config.txt
+    fi
 }
