@@ -1,0 +1,10 @@
+RPIFW_DATE = "20212205"
+SRCREV = "1eb8921ae7158249894f89e8bb6c4bfb04ec7377"
+
+SRC_URI[sha256sum] = "32fb5cc72703247622839c3cb4df2f369f91d2185770df867ac9758283bf5380"
+
+do_deploy() {
+    install -d ${DEPLOYDIR}/${PN}
+
+    cp -Rf ${S}/* ${DEPLOYDIR}/${PN}
+}
