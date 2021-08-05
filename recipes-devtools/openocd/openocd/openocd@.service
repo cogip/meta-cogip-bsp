@@ -1,0 +1,13 @@
+[Unit]
+Description=COGIP OpenOCD daemon for %i
+After=network-online.target
+
+[Service]
+Type=simple
+
+ExecStart=/usr/bin/openocd -f interface/%i.cfg
+
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
