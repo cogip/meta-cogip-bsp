@@ -1,11 +1,31 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
+DEPENDS += " \
+    libgpiod \
+"
+
+RDEPENDS_${PN} += " \
+    libgpiod \
+"
+
+LIC_FILES_CHKSUM = " \
+    file://COPYING;md5=599d2d1ee7fc84c0467b3d19801db870 \
+"
+
+SRCREV_openocd = "b1de11616099fe97f3534fa0f268c10dfd6ecf2b"
+
+SRC_URI_remove = " \
+    file://0001-Do-not-include-syscrtl.h-with-glibc.patch \
+"
+
 SRC_URI += " \
+    file://0001-fix-khz-for-linuxgpiod.patch \
     file://openocd@.service \
     file://cogip.cfg \
 "
 
-EXTRA_OECONF += "--enable-sysfsgpio --enable-bcm2835gpio"
+EXTRA_OECONF_cogip-raspberrypi0-wifi += "--enable-bcm2835gpio"
+EXTRA_OECONF_cogip-odroid-xu4 += "--enable-linuxgpiod"
 
 do_install_append() {
     install -m 0644 ${WORKDIR}/cogip.cfg \

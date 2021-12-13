@@ -1,0 +1,79 @@
+From ca7a2cbb4c2271b4ea465a8379548eb0356f0db3 Mon Sep 17 00:00:00 2001
+From: Gilles DOFFE <g.doffe@gmail.com>
+Date: Sat, 11 Dec 2021 02:14:02 +0100
+Subject: [PATCH] fix khz for linuxgpiod
+
+---
+ src/jtag/adapter.c            |  2 +-
+ src/jtag/drivers/bitbang.c    |  2 ++
+ src/jtag/drivers/linuxgpiod.c | 21 +++++++++++++++++++++
+ 3 files changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/src/jtag/adapter.c b/src/jtag/adapter.c
+index 14452d42f..ad52ebcfd 100644
+--- a/src/jtag/adapter.c
++++ b/src/jtag/adapter.c
+@@ -147,7 +147,7 @@ static int adapter_khz_to_speed(unsigned int khz, int *speed)
+ 		return ERROR_OK;
+ 	LOG_DEBUG("have adapter set up");
+ 	if (!adapter_driver->khz) {
+-		LOG_ERROR("Translation from khz to adapter speed not implemented");
++		LOG_ERROR("Translation from khz to adapter speed not implemented %s", adapter_driver->name);
+ 		return ERROR_FAIL;
+ 	}
+ 	int speed_div1;
+diff --git a/src/jtag/drivers/bitbang.c b/src/jtag/drivers/bitbang.c
+index 898d6d3df..84dad3f87 100644
+--- a/src/jtag/drivers/bitbang.c
++++ b/src/jtag/drivers/bitbang.c
+@@ -419,6 +419,8 @@ static void bitbang_swd_exchange(bool rnw, uint8_t buf[], unsigned int offset, u
+ 		/* FIXME: we should manage errors */
+ 		bitbang_interface->blink(0);
+ 	}
++
++    keep_alive();
+ }
+ 
+ static int bitbang_swd_switch_seq(enum swd_special_seq seq)
+diff --git a/src/jtag/drivers/linuxgpiod.c b/src/jtag/drivers/linuxgpiod.c
+index 75f6152be..2f0d7609d 100644
+--- a/src/jtag/drivers/linuxgpiod.c
++++ b/src/jtag/drivers/linuxgpiod.c
+@@ -60,6 +60,24 @@ static bb_value_t linuxgpiod_read(void)
+ 	return retval ? BB_HIGH : BB_LOW;
+ }
+ 
++static int linuxgpiod_khz(int khz, int *speed)
++{
++	*speed = khz;
++	return ERROR_OK;
++}
++
++static int linuxgpiod_speed(int speed)
++{
++	return ERROR_OK;
++}
++
++static int linuxgpiod_speed_div(int speed, int *khz)
++{
++	*khz = speed;
++
++	return ERROR_OK;
++}
++
+ /*
+  * Bitbang interface write of TCK, TMS, TDI
+  *
+@@ -647,6 +665,9 @@ struct adapter_driver linuxgpiod_adapter_driver = {
+ 	.init = linuxgpiod_init,
+ 	.quit = linuxgpiod_quit,
+ 	.reset = linuxgpiod_reset,
++	.speed = &linuxgpiod_speed,
++	.speed_div = &linuxgpiod_speed_div,
++	.khz = &linuxgpiod_khz,
+ 
+ 	.jtag_ops = &linuxgpiod_interface,
+ 	.swd_ops = &bitbang_swd,
+-- 
+2.25.1
+
