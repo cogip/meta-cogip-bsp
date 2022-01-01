@@ -15,7 +15,8 @@ SRC_URI += " \
     file://cogip.cfg \
 "
 
-EXTRA_OECONF += "--enable-sysfsgpio --enable-bcm2835gpio"
+### COGIP Raspberry Pi0
+EXTRA_OECONF_cogip-raspberrypi0-wifi += "--enable-bcm2835gpio"
 
 do_install_append() {
     install -m 0644 ${WORKDIR}/cogip.cfg \
