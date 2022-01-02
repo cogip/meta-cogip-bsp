@@ -17,6 +17,15 @@ SRC_URI += " \
     file://cogip.cfg \
 "
 
+### COGIP Odroid XU4
+DEPENDS_cogip-odroid-xu4 += " \
+    libgpiod \
+"
+RDEPENDS_${PN}_cogip-odroid-xu4 += " \
+    libgpiod \
+"
+EXTRA_OECONF_cogip-odroid-xu4 += "--enable-linuxgpiod"
+
 ### COGIP Raspberry Pi0
 EXTRA_OECONF_cogip-raspberrypi0-wifi += "--enable-bcm2835gpio"
 
