@@ -1,0 +1,36 @@
+From b588bc661c1a01f34286bb2eaefc9707ca7212b2 Mon Sep 17 00:00:00 2001
+From: Gilles DOFFE <g.doffe@gmail.com>
+Date: Sun, 2 Jan 2022 15:31:11 +0100
+Subject: [PATCH 2/2] drivers/bitbang: add call to keep_alive()
+
+The keep_alive() function is used to tell to GDB that OpenOCD is
+still alive.
+However it is never called by the bitbang driver.
+Thus simply call the keep_alive() function at the end of each SWD
+exchange.
+This avoids GDB messages:
+  Warn : keep_alive() was not invoked in the 1000 ms timelimit.
+  GDB alive packet not sent! (2150 ms). Workaround: increase
+  "set remotetimeout" in GDB
+
+Signed-off-by: Gilles DOFFE <g.doffe@gmail.com>
+---
+ src/jtag/drivers/bitbang.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/jtag/drivers/bitbang.c b/src/jtag/drivers/bitbang.c
+index 898d6d3df..84dad3f87 100644
+--- a/src/jtag/drivers/bitbang.c
++++ b/src/jtag/drivers/bitbang.c
+@@ -419,6 +419,8 @@ static void bitbang_swd_exchange(bool rnw, uint8_t buf[], unsigned int offset, u
+ 		/* FIXME: we should manage errors */
+ 		bitbang_interface->blink(0);
+ 	}
++
++    keep_alive();
+ }
+ 
+ static int bitbang_swd_switch_seq(enum swd_special_seq seq)
+-- 
+2.25.1
+
