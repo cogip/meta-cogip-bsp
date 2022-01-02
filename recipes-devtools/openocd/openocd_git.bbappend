@@ -11,6 +11,8 @@ SRC_URI_remove = " \
 "
 
 SRC_URI += " \
+    file://0001-drivers-linuxgpiod-stub-khz-and-speed-callbacks.patch \
+    file://0002-drivers-bitbang-add-call-to-keep_alive.patch \
     file://openocd@.service \
     file://cogip.cfg \
 "
