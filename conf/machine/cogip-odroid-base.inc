@@ -7,7 +7,7 @@ SOC_FAMILY = "odroid"
 include conf/machine/include/soc_family.inc
 
 #
-# Bootloader Barebox
+# Bootloader
 #
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot"
 PREFERRED_PROVIDER_u-boot = "u-boot"
