@@ -31,4 +31,3 @@ COGIP_BOOT_FILES = " \
     bootfiles/overlays \
     zImage:kernel.img \
 "
-
