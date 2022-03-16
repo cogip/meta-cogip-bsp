@@ -1,0 +1,57 @@
+From 58c4a147ee230ad9e2b862ae9ed6d3f272000f36 Mon Sep 17 00:00:00 2001
+From: Gilles DOFFE <g.doffe@gmail.com>
+Date: Sat, 11 Dec 2021 02:14:02 +0100
+Subject: [PATCH 1/2] drivers/linuxgpiod: stub khz and speed callbacks
+
+This commit does not modify openocd linuxgpiod driver behavior.
+It simply stubs driver callbacks to avoid this warning:
+  "Translation from khz to adapter speed not implemented"
+
+Signed-off-by: Gilles DOFFE <g.doffe@gmail.com>
+---
+ src/jtag/drivers/linuxgpiod.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/src/jtag/drivers/linuxgpiod.c b/src/jtag/drivers/linuxgpiod.c
+index 9f9f27a9f..8f5e621b9 100644
+--- a/src/jtag/drivers/linuxgpiod.c
++++ b/src/jtag/drivers/linuxgpiod.c
+@@ -78,6 +78,25 @@ static bb_value_t linuxgpiod_read(void)
+ 	return retval ? BB_HIGH : BB_LOW;
+ }
+ 
++static int linuxgpiod_khz(int khz, int *speed)
++{
++	*speed = khz;
++
++	return ERROR_OK;
++}
++
++static int linuxgpiod_speed(int speed)
++{
++	return ERROR_OK;
++}
++
++static int linuxgpiod_speed_div(int speed, int *khz)
++{
++	*khz = speed;
++
++	return ERROR_OK;
++}
++
+ /*
+  * Bitbang interface write of TCK, TMS, TDI
+  *
+@@ -732,6 +751,9 @@ struct adapter_driver linuxgpiod_adapter_driver = {
+ 	.init = linuxgpiod_init,
+ 	.quit = linuxgpiod_quit,
+ 	.reset = linuxgpiod_reset,
++	.speed = &linuxgpiod_speed,
++	.speed_div = &linuxgpiod_speed_div,
++	.khz = &linuxgpiod_khz,
+ 
+ 	.jtag_ops = &linuxgpiod_interface,
+ 	.swd_ops = &bitbang_swd,
+-- 
+2.25.1
+
