@@ -1,3 +1,7 @@
+# Use mainline devicetree for VC4
+unset VC4GRAPHICS
+unset VC4DTBO
+
 do_deploy_append () {
     # Kernel image to launch
     if [ -n "${RPI_KERNEL}" ]; then
