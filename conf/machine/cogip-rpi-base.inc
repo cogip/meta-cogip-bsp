@@ -19,6 +19,15 @@ PREFERRED_PROVIDER_virtual/kernel = "linux-stable"
 RPI_KERNEL_DEVICETREE_OVERLAYS = ""
 
 #
+# Firmwares
+#
+MACHINE_EXTRA_RRECOMMENDS = " \
+    kernel-modules \
+    linux-firmware-bcm43455 \
+    udev-rules-rpi \
+"
+
+#
 # RPi options
 #
 # Always turn on UART for debug
