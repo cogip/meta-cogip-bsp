@@ -1,6 +1,9 @@
 # Only build ext4 and tar.bz2 for 'genimage'
 IMAGE_FSTYPES = "ext4 tar.bz2"
 
+# No splash screen
+unset SPLASH
+
 #
 # Bootloader
 #
