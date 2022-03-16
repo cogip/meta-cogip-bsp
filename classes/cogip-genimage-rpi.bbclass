@@ -22,16 +22,11 @@ fakeroot do_bootfiles () {
 addtask bootfiles before do_genimage
 do_bootfiles[depends] += " \
     ${@'${GENIMAGE_ROOTFS_IMAGE}:do_image_complete' if '${GENIMAGE_ROOTFS_IMAGE}' else ''} \
+    bootfiles:do_deploy \
     dosfstools-native:do_populate_sysroot \
     mtools-native:do_populate_sysroot \
     rpi-config:do_deploy \
     virtual/bootloader:do_deploy \
     virtual/fakeroot-native:do_populate_sysroot \
     virtual/kernel:do_deploy \
-"
-do_bootfiles[nostamp] = "1"
-
-# bootfiles
-do_genimage[depends] += " \
-    bootfiles:do_deploy \
 "
