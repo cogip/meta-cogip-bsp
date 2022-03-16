@@ -13,6 +13,10 @@ PREFERRED_PROVIDER_u-boot-default-script = "u-boot-scr"
 UBOOT_BINARY = "u-boot.bin"
 
 #
+# Kernel
+#
+PREFERRED_PROVIDER_virtual/kernel = "linux-stable"
+
 
 #
 # RPi options
