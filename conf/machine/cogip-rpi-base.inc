@@ -2,20 +2,22 @@
 IMAGE_FSTYPES = "ext4 tar.bz2"
 
 #
-# Bootloader Barebox
+# Bootloader
 #
-PREFERRED_PROVIDER_virtual/bootloader = "barebox"
-PREFERRED_VERSION_barebox = "2021.03.0"
-COMPATIBLE_MACHINE_pn-barebox = "${MACHINE}"
-BAREBOX_CONFIG = "rpi_defconfig"
+PREFERRED_PROVIDER_virtual/bootloader = "u-boot"
+PREFERRED_PROVIDER_u-boot = "u-boot"
+PREFERRED_PROVIDER_u-boot-default-script = "u-boot-scr"
+UBOOT_BINARY = "u-boot.bin"
+
+#
 
 #
 # RPi options
 #
 # Always turn on UART for debug
 ENABLE_UART = "1"
-# RPi should boot barebox instead of linux kernel
-RPI_KERNEL = "barebox.img"
+# RPi should boot bootloader instead of linux kernel
+RPI_KERNEL = "u-boot.bin"
 # Remove comments from config.txt
 RPI_CONFIG_STRIP = "1"
 
