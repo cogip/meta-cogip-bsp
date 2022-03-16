@@ -40,12 +40,8 @@ RPI_CONFIG_STRIP = "1"
 # COGIP_BOOT_FILES is similar to IMAGE_BOOT_FILES with separator ';' replaced
 # by ':'. ';' separator cannot be used in shell functions.
 COGIP_BOOT_FILES = " \
-    bootfiles/*.bin \
-    bootfiles/*.dat \
-    bootfiles/*.dtb \
-    bootfiles/*.elf \
-    bootfiles/cmdline.txt \
     bootfiles/config.txt \
-    bootfiles/overlays \
-    zImage:kernel.img \
+    boot.scr \
+    Image \
+    u-boot.bin \
 "
