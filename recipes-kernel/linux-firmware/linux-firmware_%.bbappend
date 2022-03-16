@@ -13,3 +13,7 @@ FILES_${PN}-s5pmfcv8 = " \
   ${nonarch_base_libdir}/firmware/s5p-mfc-v8.fw \
 "
 PACKAGES_prepend = " ${PN}-s5pmfcv8 "
+
+do_install_append_rpi () {
+    ln -s brcmfmac43455-sdio.bin ${D}${nonarch_base_libdir}/firmware/brcm/brcmfmac43455-sdio.raspberrypi,4-model-b.bin
+}
