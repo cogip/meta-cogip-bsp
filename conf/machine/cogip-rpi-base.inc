@@ -16,6 +16,7 @@ BAREBOX_CONFIG = "rpi_defconfig"
 # Kernel
 #
 PREFERRED_PROVIDER_virtual/kernel = "linux-stable"
+RPI_KERNEL_DEVICETREE_OVERLAYS = ""
 
 #
 # RPi options
