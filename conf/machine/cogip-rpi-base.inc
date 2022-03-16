@@ -16,6 +16,7 @@ UBOOT_BINARY = "u-boot.bin"
 # Kernel
 #
 PREFERRED_PROVIDER_virtual/kernel = "linux-stable"
+RPI_KERNEL_DEVICETREE_OVERLAYS = ""
 
 
 #
