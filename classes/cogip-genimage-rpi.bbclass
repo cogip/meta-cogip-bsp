@@ -20,7 +20,7 @@ fakeroot do_bootfiles () {
             (bberror "Error copying ${DEPLOY_DIR_IMAGE}/$source to ::$dest ! Possible cause: the file already exists."; exit 1)
     done
 }
-addtask bootfiles before do_genimage
+addtask bootfiles before do_linkrootfs
 do_bootfiles[depends] += " \
     ${@'${GENIMAGE_ROOTFS_IMAGE}:do_image_complete' if '${GENIMAGE_ROOTFS_IMAGE}' else ''} \
     bootfiles:do_deploy \
