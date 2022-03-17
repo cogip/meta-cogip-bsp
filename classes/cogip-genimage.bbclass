@@ -21,4 +21,3 @@ do_linkrootfs () {
 }
 addtask linkrootfs after before do_genimage
 do_linkrootfs[depends] += "${@'${GENIMAGE_ROOTFS_IMAGE}:do_image_complete' if '${GENIMAGE_ROOTFS_IMAGE}' else ''}"
-do_linkrootfs[nostamp] = "1"
