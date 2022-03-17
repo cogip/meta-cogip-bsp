@@ -31,3 +31,11 @@ do_bootfiles[depends] += " \
     virtual/fakeroot-native:do_populate_sysroot \
     virtual/kernel:do_deploy \
 "
+
+# Link to vfat boot partition file
+do_deploy_append() {
+    bbwarn tata
+    if [ -f ${DEPLOYDIR}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat ]; then
+        ln -sf ${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat ${DEPLOYDIR}/${GENIMAGE_IMAGE_LINK_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat
+    fi
+}
