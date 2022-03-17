@@ -16,7 +16,8 @@ fakeroot do_bootfiles () {
         dest=$(echo $f | cut -d ':' -f2 -s)
 
         echo $dest | grep "/" && mmd -i ${DEPLOY_DIR_IMAGE}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat -Ds $(dirname $dest) || true
-        mcopy -i ${DEPLOY_DIR_IMAGE}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat ${DEPLOY_DIR_IMAGE}/$source ::$dest
+        mcopy -v -n -i ${DEPLOY_DIR_IMAGE}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat ${DEPLOY_DIR_IMAGE}/$source ::$dest || \
+            (bberror "Error copying ${DEPLOY_DIR_IMAGE}/$source to ::$dest ! Possible cause: the file already exists."; exit 1)
     done
 }
 addtask bootfiles before do_genimage
