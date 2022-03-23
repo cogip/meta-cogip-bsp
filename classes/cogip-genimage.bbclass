@@ -17,9 +17,7 @@ do_deploy_append() {
 }
 
 # Link rootfs image to genimage image name
-do_linkrootfs () {
+fakeroot do_genimage_prepend () {
     # Link to rootfs image to be used in genimage.config
     ln -s ${DEPLOY_DIR_IMAGE}/${GENIMAGE_ROOTFS_IMAGE}-${MACHINE}.ext4 ${DEPLOY_DIR_IMAGE}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.rootfs.ext4
 }
-addtask linkrootfs after before do_genimage
-do_linkrootfs[depends] += "${@'${GENIMAGE_ROOTFS_IMAGE}:do_image_complete' if '${GENIMAGE_ROOTFS_IMAGE}' else ''}"
