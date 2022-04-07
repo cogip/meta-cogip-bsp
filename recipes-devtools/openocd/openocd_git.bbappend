@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
 LIC_FILES_CHKSUM = " \
     file://COPYING;md5=599d2d1ee7fc84c0467b3d19801db870 \
@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = " \
 
 SRCREV_openocd = "d27d66bc1bdbef0cbfe43d88597576e173317c01"
 
-SRC_URI_remove = " \
+SRC_URI:remove = " \
     file://0001-Do-not-include-syscrtl.h-with-glibc.patch \
 "
 
@@ -29,7 +29,7 @@ EXTRA_OECONF_cogip-odroid-xu4 += "--enable-linuxgpiod"
 ### COGIP Raspberry Pi0
 EXTRA_OECONF_cogip-raspberrypi0-wifi += "--enable-bcm2835gpio"
 
-do_install_append() {
+do_install:append() {
     install -m 0644 ${WORKDIR}/cogip.cfg \
         ${D}${datadir}/openocd/scripts/interface/cogip.cfg
 
@@ -40,7 +40,7 @@ do_install_append() {
 SYSTEMD_SERVICE_${PN} = "openocd@cogip.service"
 SYSTEMD_AUTO_ENABLE = "enable"
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${systemd_unitdir}/system/openocd@.service \
 "
 

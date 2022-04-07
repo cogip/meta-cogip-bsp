@@ -4,7 +4,7 @@ inherit cogip-genimage
 COGIP_BOOT_SIZE ?= "64"
 
 # Aggregate all boot files into a dedicated vfat boot partition
-fakeroot do_genimage_prepend () {
+fakeroot do_genimage:prepend () {
     # Create boot vfat partition
     rm -f ${B}/${GENIMAGE_IMAGE_NAME}*.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat
     dd if=/dev/zero of=${B}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat count=${COGIP_BOOT_SIZE} bs=1M
@@ -21,11 +21,11 @@ fakeroot do_genimage_prepend () {
     done
 
     # As genimage is using @IMAGE@ placeholder, replaced with GENIMAGE_ROOTFS_IMAGE which points to the final deployment directory DEPLOY_DIR_IMAGE,
-    # vfat boot partition file has to be placed there too temporarily (see do_genimage_append below).
+    # vfat boot partition file has to be placed there too temporarily (see do_genimage:append below).
     cp -f ${B}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat ${DEPLOY_DIR_IMAGE}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat
 }
 do_genimage[depends] += " \
-    bootfiles:do_deploy \
+    rpi-bootfiles:do_deploy \
     dosfstools-native:do_populate_sysroot \
     mtools-native:do_populate_sysroot \
     rpi-config:do_deploy \
@@ -34,13 +34,13 @@ do_genimage[depends] += " \
     virtual/kernel:do_deploy \
 "
 
-fakeroot do_genimage_append () {
-    # Remove temporarily added vfat boot partition from final deployment directory DEPLOY_DIR_IMAGE (see do_genimage_prepend above).
+fakeroot do_genimage:append () {
+    # Remove temporarily added vfat boot partition from final deployment directory DEPLOY_DIR_IMAGE (see do_genimage:prepend above).
     rm -f ${DEPLOY_DIR_IMAGE}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat
 }
 
 # Link to vfat boot partition file
-do_deploy_append() {
+do_deploy:append() {
     # Copy vfat boot partition file to temporary deploy dir, to be cached into shared state cache
     cp -f ${B}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat ${DEPLOYDIR}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat
 

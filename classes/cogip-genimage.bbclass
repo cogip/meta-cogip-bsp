@@ -2,7 +2,7 @@ inherit genimage
 
 
 # Create bmap file
-fakeroot do_genimage_append() {
+fakeroot do_genimage:append() {
     bmaptool create -o ${B}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.bmap ${B}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}
 }
 do_genimage[depends] += " \
@@ -10,14 +10,14 @@ do_genimage[depends] += " \
 "
 
 # Link to bmap file
-do_deploy_append() {
+do_deploy:append() {
     if [ -f ${DEPLOYDIR}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.bmap ]; then
         ln -sf ${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.bmap ${DEPLOYDIR}/${GENIMAGE_IMAGE_LINK_NAME}.${GENIMAGE_IMAGE_SUFFIX}.bmap
     fi
 }
 
 # Link rootfs image to genimage image name
-fakeroot do_genimage_prepend () {
+fakeroot do_genimage:prepend () {
     # Link to rootfs image to be used in genimage.config
     ln -s ${DEPLOY_DIR_IMAGE}/${GENIMAGE_ROOTFS_IMAGE}-${MACHINE}.ext4 ${DEPLOY_DIR_IMAGE}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.rootfs.ext4
 }

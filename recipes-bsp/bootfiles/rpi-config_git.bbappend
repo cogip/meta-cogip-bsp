@@ -2,7 +2,7 @@
 unset VC4GRAPHICS
 unset VC4DTBO
 
-do_deploy_append () {
+do_deploy:append () {
     # Kernel image to launch
     if [ -n "${RPI_KERNEL}" ]; then
         echo "# Change default booted image" >> ${DEPLOYDIR}/${BOOTFILES_DIR_NAME}/config.txt
