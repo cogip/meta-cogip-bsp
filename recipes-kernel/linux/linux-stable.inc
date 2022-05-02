@@ -5,9 +5,6 @@ LICENSE = "GPLv2"
 # Based on linux-yocto
 require recipes-kernel/linux/linux-yocto.inc
 
-# Do not use KERNEL_FEATURES
-unset KERNEL_FEATURES
-
 # Source directory
 S = "${WORKDIR}/git"
 
