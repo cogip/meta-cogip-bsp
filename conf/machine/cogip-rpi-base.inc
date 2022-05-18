@@ -1,3 +1,6 @@
+# Base COGIP machine configuration
+require cogip-base.inc
+
 # Only build ext4 and tar.bz2 for 'genimage'
 IMAGE_FSTYPES = "ext4 tar.bz2"
 
@@ -7,9 +10,6 @@ unset SPLASH
 #
 # Bootloader
 #
-PREFERRED_PROVIDER_virtual/bootloader = "u-boot"
-PREFERRED_PROVIDER_u-boot = "u-boot"
-PREFERRED_PROVIDER_u-boot-default-script = "u-boot-scr"
 UBOOT_BINARY = "u-boot.bin"
 
 #
@@ -17,6 +17,7 @@ UBOOT_BINARY = "u-boot.bin"
 #
 PREFERRED_PROVIDER_virtual/kernel = "linux-stable"
 RPI_KERNEL_DEVICETREE_OVERLAYS = ""
+KERNEL_IMAGETYPE_DIRECT = "Image"
 
 #
 # Firmwares
@@ -37,10 +38,13 @@ RPI_KERNEL = "u-boot.bin"
 # Remove comments from config.txt
 RPI_CONFIG_STRIP = "1"
 
+# Where downloaded Raspberry bootfiles are extracted
+BOOTFILES_DIR_NAME = "${MACHINE}-bootfiles"
+
 # COGIP_BOOT_FILES is similar to IMAGE_BOOT_FILES with separator ';' replaced
 # by ':'. ';' separator cannot be used in shell functions.
 COGIP_BOOT_FILES = " \
-    bootfiles/config.txt \
+    ${BOOTFILES_DIR_NAME}/config.txt \
     boot.scr \
     Image \
     u-boot.bin \

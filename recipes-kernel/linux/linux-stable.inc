@@ -5,6 +5,9 @@ LICENSE = "GPLv2"
 # Based on linux-yocto
 require recipes-kernel/linux/linux-yocto.inc
 
+# Do not use KERNEL_FEATURES
+unset KERNEL_FEATURES
+
 # Source directory
 S = "${WORKDIR}/git"
 
@@ -13,7 +16,7 @@ LINUX_VERSION = "${@bb.parse.vars_from_file(d.getVar('FILE', False),d)[1] or '1.
 PV = "${LINUX_VERSION}+git${SRCPV}"
 
 SRC_URI = " \
-    git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git;protocol=git;branch=master;name=machine \
+    git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git;protocol=git;branch=master;name=machine;nobranch=1 \
 "
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
