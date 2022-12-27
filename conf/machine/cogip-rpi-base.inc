@@ -13,6 +13,11 @@ COMPATIBLE_MACHINE_pn-barebox = "${MACHINE}"
 BAREBOX_CONFIG = "rpi_defconfig"
 
 #
+# Kernel
+#
+PREFERRED_PROVIDER_virtual/kernel = "linux-stable"
+
+#
 # RPi options
 #
 # Always turn on UART for debug
