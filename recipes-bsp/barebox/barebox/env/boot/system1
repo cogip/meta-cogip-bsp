@@ -1,0 +1,9 @@
+#!/bin/sh
+
+bootargs="console=serial0,115200 root=/dev/mmcblk1p6 rootfstype=ext4 rootwait bootchooser.active=system1"
+
+global linux.bootargs.dyn.vc="${bootargs}"
+mkdir /boot1
+mount /dev/disk0.4 /boot1
+global.bootm.image="/boot1/${global.vc.kernel}"
+global.bootm.oftree=/boot1/@@COGIP_KERNEL_DEVICETREE@@.dtb

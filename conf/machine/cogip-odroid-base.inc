@@ -1,3 +1,6 @@
+# Base COGIP machine configuration
+require cogip-base.inc
+
 # Only build ext4 and tar.bz2 for 'genimage'
 IMAGE_FSTYPES = "ext4 tar.bz2"
 
@@ -9,9 +12,10 @@ include conf/machine/include/soc_family.inc
 #
 # Bootloader
 #
+UBOOT_BINARY ?= "u-boot-dtb.bin"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot"
 PREFERRED_PROVIDER_u-boot = "u-boot"
-UBOOT_BINARY = "u-boot-dtb.bin"
+PREFERRED_PROVIDER_u-boot-default-script = "u-boot-scr"
 
 #
 # Kernel

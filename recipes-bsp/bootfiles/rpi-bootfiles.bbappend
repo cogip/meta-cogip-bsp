@@ -1,7 +1,5 @@
-RPIFW_DATE = "20220316"
-SRCREV = "7cb1aa0ff575959163e1cea042e5e3ab5a7a90d2"
-
-SRC_URI[sha256sum] = "efa43d04a3813fc2ecdea1f7013c6869afa523b59ae063b30eb78e3faac2fd63"
+RPIFW_DATE = "20221104"
+SRC_URI[sha256sum] = "ce2b63610d8e7018f6837597cfe272ca4318d8864aa61ac1d79a7796222efec5"
 
 do_deploy() {
     install -d ${DEPLOYDIR}/${PN}

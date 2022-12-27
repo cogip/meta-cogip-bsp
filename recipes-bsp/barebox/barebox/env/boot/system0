@@ -1,0 +1,10 @@
+#!/bin/sh
+
+#readf /boot/cmdline.txt bootargs
+bootargs="console=serial0,115200 root=/dev/mmcblk1p3 rootfstype=ext4 rootwait bootchooser.active=system0"
+
+global linux.bootargs.dyn.vc="${bootargs}"
+mkdir /boot0
+mount /dev/disk0.1 /boot0
+global.bootm.image="/boot0/${global.vc.kernel}"
+global.bootm.oftree=/boot0/@@COGIP_KERNEL_DEVICETREE@@.dtb

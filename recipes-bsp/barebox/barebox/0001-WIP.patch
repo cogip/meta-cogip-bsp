@@ -1,0 +1,93 @@
+From 679a8725f83be7942be0ae4a46918cc4fb75e6e3 Mon Sep 17 00:00:00 2001
+From: Gilles DOFFE <gilles.doffe@rtone.fr>
+Date: Tue, 6 Jun 2023 15:29:00 +0200
+Subject: [PATCH] WIP
+
+---
+ arch/arm/dts/bcm2711-rpi-4.dts | 73 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
+
+diff --git a/arch/arm/dts/bcm2711-rpi-4.dts b/arch/arm/dts/bcm2711-rpi-4.dts
+index 3c0caa73f8..e5cb2ea123 100644
+--- a/arch/arm/dts/bcm2711-rpi-4.dts
++++ b/arch/arm/dts/bcm2711-rpi-4.dts
+@@ -16,3 +16,76 @@
+ 	 */
+ 	clock-frequency = <500000000>;
+ };
++
++&emmc2 {
++	partitions {
++		compatible = "fixed-partitions";
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		backend_state_flash: partition@0x04400000 {
++			label = "barebox-state";
++			reg = <0x4400000 0x400000>;
++		};
++	};
++};
++
++&{/} {
++	aliases {
++		state = "/state";
++	};
++
++	state {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "barebox,state";
++		magic = <0x290cf8c6>;
++		backend-type = "raw";
++		backend = < &backend_state_flash >;
++		backend-stridesize = <0x200>;
++
++		bootstate {
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			system0 {
++				#address-cells = <1>;
++				#size-cells = <1>;
++
++				remaining_attempts@0 {
++					reg = <0x0 0x4>;
++					type = "uint32";
++					default = <3>;
++				};
++
++				priority@4 {
++					reg = <0x4 0x4>;
++					type = "uint32";
++					default = <20>;
++				};
++			};
++
++			system1 {
++				#address-cells = <1>;
++				#size-cells = <1>;
++
++				remaining_attempts@8 {
++					reg = <0x8 0x4>;
++					type = "uint32";
++					default = <3>;
++				};
++
++				priority@c {
++					reg = <0xc 0x4>;
++					type = "uint32";
++					default = <21>;
++				};
++			};
++
++			last_chosen@10 {
++				reg = <0x10 0x4>;
++				type = "uint32";
++			};
++		};
++	};
++};
+-- 
+2.37.0
+

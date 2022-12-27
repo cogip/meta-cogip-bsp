@@ -5,19 +5,30 @@ COGIP_BOOT_SIZE ?= "64"
 
 # Aggregate all boot files into a dedicated vfat boot partition
 fakeroot do_genimage:prepend () {
+    cogip_boot_files="${COGIP_BOOT_FILES}"
+
+    # Append overlays to bootfiles
+    for overlay in ${RPI_KERNEL_DEVICETREE_OVERLAYS}; do
+        overlay=`echo "${overlay}" | cut -d',' -f1`
+        bbwarn ${overlay}
+        cogip_boot_files="${cogip_boot_files} \
+            rpi-bootfiles/overlays/${overlay}.dtbo:overlays/${overlay}.dtbo \
+        "
+    done
+
     # Create boot vfat partition
-    rm -f ${B}/${GENIMAGE_IMAGE_NAME}*.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat
+    rm -f ${B}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat
     dd if=/dev/zero of=${B}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat count=${COGIP_BOOT_SIZE} bs=1M
     mkfs.vfat  ${B}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat
 
     # Copy boot files to vfat
-    for f in ${COGIP_BOOT_FILES}; do
+    for f in ${cogip_boot_files}; do
         source=$(echo $f | cut -d ':' -f1)
         dest=$(echo $f | cut -d ':' -f2 -s)
 
         echo $dest | grep "/" && mmd -i ${B}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat -Ds $(dirname $dest) || true
         mcopy -v -n -i ${B}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.boot.vfat ${DEPLOY_DIR_IMAGE}/$source ::$dest || \
-            (bberror "Error copying ${B}/$source to ::$dest ! Possible cause: the file already exists."; exit 1)
+            (bberror "Error copying ${B}/$source to ::$dest ! Possible cause: the dest file already exists or the source file does not."; exit 1)
     done
 
     # As genimage is using @IMAGE@ placeholder, replaced with GENIMAGE_ROOTFS_IMAGE which points to the final deployment directory DEPLOY_DIR_IMAGE,
@@ -26,6 +37,7 @@ fakeroot do_genimage:prepend () {
 }
 do_genimage[depends] += " \
     rpi-bootfiles:do_deploy \
+    rpi-cmdline:do_deploy \
     dosfstools-native:do_populate_sysroot \
     mtools-native:do_populate_sysroot \
     rpi-config:do_deploy \

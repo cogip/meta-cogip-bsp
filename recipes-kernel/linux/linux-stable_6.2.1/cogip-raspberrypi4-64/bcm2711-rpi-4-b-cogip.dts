@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: GPL-2.0
+/dts-v1/;
+#include "arm/bcm2711-rpi-4-b.dts"
+
+&emmc2bus {
+    dma-ranges = <0x00 0x00 0x00 0x00 0xfc000000>;
+};

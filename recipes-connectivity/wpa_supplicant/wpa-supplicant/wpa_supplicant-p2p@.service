@@ -1,0 +1,14 @@
+[Unit]
+Description=WPA supplicant daemon (interface-specific version)
+Requires=sys-subsystem-net-devices-%i.device
+After=sys-subsystem-net-devices-%i.device
+Before=wpa_supplicant@%i.service
+Before=network.target
+Wants=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/iw dev %i interface add %i_p2pdev type __p2pdev
+
+[Install]
+RequiredBy=wpa_supplicant@%i.service

@@ -1,6 +1,5 @@
 inherit genimage
 
-
 # Create bmap file
 fakeroot do_genimage:append() {
     bmaptool create -o ${B}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}.bmap ${B}/${GENIMAGE_IMAGE_NAME}.${GENIMAGE_IMAGE_SUFFIX}
