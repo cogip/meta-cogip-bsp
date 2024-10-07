@@ -2,6 +2,6 @@
 /dts-v1/;
 #include "arm/bcm2711-rpi-4-b.dts"
 
-&emmc2bus {
-    dma-ranges = <0x00 0x00 0x00 0x00 0xfc000000>;
-};
+//&emmc2bus {
+//    dma-ranges = <0x00 0x00 0x00 0x00 0xfc000000>;
+//};
