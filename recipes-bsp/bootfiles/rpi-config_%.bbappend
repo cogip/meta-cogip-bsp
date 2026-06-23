@@ -13,6 +13,13 @@
 DISABLE_OVERSCAN = "1"
 RPI_EXTRA_CONFIG:append = "\ndisable_fw_kms_setup=1"
 
+# Boot-time trims for the firmware/bootloader phase (power-on -> kernel):
+# no boot delay, no rainbow splash, and full CPU clock from the start
+# (initial_turbo + arm_boost) so early boot and the kernel decompress run
+# at speed. Shaves the firmware phase the kernel-side systemd-analyze does
+# not even measure.
+RPI_EXTRA_CONFIG:append = "\nboot_delay=0\ndisable_splash=1\ninitial_turbo=30\narm_boost=1"
+
 # CAN bus for the copilot tool: an MCP251xFD CAN-FD controller on SPI1
 # (CS0 = GPIO16, 20 MHz crystal, IRQ on GPIO4), as on the robots. The
 # overlay creates can0; systemd-networkd brings it up (cogip-net's
