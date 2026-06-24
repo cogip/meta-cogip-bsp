@@ -20,6 +20,14 @@ RPI_EXTRA_CONFIG:append = "\ndisable_fw_kms_setup=1"
 # not even measure.
 RPI_EXTRA_CONFIG:append = "\nboot_delay=0\ndisable_splash=1\ninitial_turbo=30\narm_boost=1"
 
+# Overclock the SD card clock to 100 MHz (the MMC framework's 50 MHz request).
+# Boot blame showed dev-mmcblk0p2.device taking ~2.3s, and the whole rootfs
+# (kernel modules, the Python site-packages cold start) is read from SD; a
+# faster SD clock cuts that across the board. Use the base dtparam, not the
+# old sdtweak overlay (removed from the 6.12 kernel). Requires a card that
+# tolerates 100 MHz (the team's raspios cards already run this).
+RPI_EXTRA_CONFIG:append = "\ndtparam=sd_overclock=100"
+
 # CAN bus for the copilot tool: an MCP251xFD CAN-FD controller on SPI1
 # (CS0 = GPIO16, 20 MHz crystal, IRQ on GPIO4), as on the robots. The
 # overlay creates can0; systemd-networkd brings it up (cogip-net's
