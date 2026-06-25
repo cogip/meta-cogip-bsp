@@ -1,0 +1,130 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Cogip Raspberry Pi 4 board device tree.
+ *
+ * Extends the stock RPi 4B DT (which itself pulls in arm/broadcom/...) with the
+ * Cogip robot peripherals, baked directly into the board DT instead of stacking
+ * config.txt overlays (mainline kernel has no overlay set). The root compatible
+ * is inherited unchanged ("raspberrypi,4-model-b"), so brcmfmac still looks for
+ * the brcmfmac43455-sdio.raspberrypi,4-model-b.txt NVRAM.
+ *
+ * Pin groups are defined inline (brcm,pins + FSEL) so this DT does not depend
+ * on mainline pin-group label names. bcm2711 ALT4 mapping:
+ *   GPIO19/20/21 = SPI1 MISO/MOSI/SCLK ; GPIO16 = SPI1 CS0 (driven as GPIO)
+ *   GPIO4  = MCP251xFD IRQ
+ *   GPIO0/1   = TXD2/RXD2 (uart2)
+ *   GPIO8/9   = TXD4/RXD4 (uart4)
+ *   GPIO12/13 = TXD5/RXD5 (uart5)
+ *   GPIO2/3   = SDA1/SCL1 (i2c1)
+ */
+/dts-v1/;
+
+#include "bcm2711-rpi-4-b.dts"
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/pinctrl/bcm2835.h>
+
+/ {
+	/* CAN-FD crystal feeding the MCP251xFD (20 MHz). */
+	clk_mcp251xfd_osc: clk-mcp251xfd-osc {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <20000000>;
+	};
+
+	aliases {
+		/*
+		 * Pin the microSD slot (emmc2) to mmcblk0, like the RPi vendor DT.
+		 * Mainline defines no mmc aliases, so it probes the WiFi SDIO
+		 * controller (fe300000) first as mmc0 and the SD card (fe340000)
+		 * becomes mmcblk1 -- breaking root=/dev/mmcblk0p2 and the fstab
+		 * mounts (boot/data), which drop the boot to emergency mode.
+		 */
+		mmc0 = &emmc2;
+		serial2 = &uart2;
+		serial4 = &uart4;
+		serial5 = &uart5;
+	};
+};
+
+&gpio {
+	spi1_cogip_pins: spi1-cogip-pins {
+		brcm,pins = <19 20 21>;
+		brcm,function = <BCM2835_FSEL_ALT4>;
+	};
+
+	spi1_cogip_cs_pins: spi1-cogip-cs-pins {
+		brcm,pins = <16>;
+		brcm,function = <BCM2835_FSEL_GPIO_OUT>;
+	};
+
+	can_irq_pins: can-irq-pins {
+		brcm,pins = <4>;
+		brcm,function = <BCM2835_FSEL_GPIO_IN>;
+	};
+
+	uart2_cogip_pins: uart2-cogip-pins {
+		brcm,pins = <0 1>;
+		brcm,function = <BCM2835_FSEL_ALT4>;
+	};
+
+	uart4_cogip_pins: uart4-cogip-pins {
+		brcm,pins = <8 9>;
+		brcm,function = <BCM2835_FSEL_ALT4>;
+	};
+
+	uart5_cogip_pins: uart5-cogip-pins {
+		brcm,pins = <12 13>;
+		brcm,function = <BCM2835_FSEL_ALT4>;
+	};
+};
+
+/* CAN-FD (copilot bus): MCP251xFD on SPI1, CS0 = GPIO16, IRQ = GPIO4. */
+&spi1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&spi1_cogip_pins &spi1_cogip_cs_pins>;
+	cs-gpios = <&gpio 16 GPIO_ACTIVE_LOW>;
+	status = "okay";
+
+	can0: can@0 {
+		compatible = "microchip,mcp251xfd";
+		reg = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&can_irq_pins>;
+		spi-max-frequency = <10000000>;
+		interrupt-parent = <&gpio>;
+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+		clocks = <&clk_mcp251xfd_osc>;
+	};
+};
+
+/* Extra PL011 UARTs: uart2 (mcu-logger), uart4 (lidar), uart5 (spare). */
+&uart2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart2_cogip_pins>;
+	status = "okay";
+};
+
+&uart4 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart4_cogip_pins>;
+	status = "okay";
+};
+
+&uart5 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart5_cogip_pins>;
+	status = "okay";
+};
+
+/* I2C1 (GPIO2/3) + PCF8523 RTC at 0x68. */
+&i2c1 {
+	clock-frequency = <100000>;
+	status = "okay";
+
+	rtc@68 {
+		compatible = "nxp,pcf8523";
+		reg = <0x68>;
+	};
+};
