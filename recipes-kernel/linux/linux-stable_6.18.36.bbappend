@@ -6,6 +6,7 @@ SRC_URI += " \
     file://defconfig \
     file://wifi.cfg \
     file://cogip-peripherals.cfg \
+    file://cogip-trim.cfg \
 "
 unset KBUILD_DEFCONFIG
 
