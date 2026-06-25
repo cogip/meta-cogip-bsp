@@ -34,3 +34,11 @@ RPI_EXTRA_CONFIG:append = "\ndtparam=sd_overclock=100"
 # firmware must be told to load that DTB by name -- it is not auto-detected by
 # board model. No dtoverlay= here: mainline ships no RPi overlay set.
 RPI_EXTRA_CONFIG:append = "\ndevice_tree=bcm2711-rpi-4-b-cogip.dtb"
+
+# Further firmware boot-phase trims (validated live on the board). Skip the
+# auto-probe of CSI camera and DSI/HDMI display (we describe everything in the
+# board DTB, mainline ships no overlays to inject anyway), drop the legacy
+# bcm2835 audio (no audio on the kiosk; this is the DT node, not the kernel SND
+# that vc4 HDMI still needs), and zero the remaining bootcode/bootloader delays.
+# bootloader_delay applies on this pi4-only image without a [pi4] guard.
+RPI_EXTRA_CONFIG:append = "\ncamera_auto_detect=0\ndisplay_auto_detect=0\ndtparam=audio=off\nbootcode_delay=0\nbootloader_delay=0"
