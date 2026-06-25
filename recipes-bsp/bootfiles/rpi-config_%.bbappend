@@ -28,18 +28,9 @@ RPI_EXTRA_CONFIG:append = "\nboot_delay=0\ndisable_splash=1\ninitial_turbo=30\na
 # tolerates 100 MHz (the team's raspios cards already run this).
 RPI_EXTRA_CONFIG:append = "\ndtparam=sd_overclock=100"
 
-# CAN bus for the copilot tool: an MCP251xFD CAN-FD controller on SPI1
-# (CS0 = GPIO16, 20 MHz crystal, IRQ on GPIO4), as on the robots. The
-# overlay creates can0; systemd-networkd brings it up (cogip-net's
-# 00-can0.network). The kernel ships CONFIG_CAN* + CONFIG_CAN_MCP251XFD as
-# modules (in kernel-modules). On a board without the CAN HAT the driver
-# just fails to probe and can0 does not appear -- harmless.
-RPI_EXTRA_CONFIG:append = "\ndtoverlay=spi1-1cs,cs0_pin=16\ndtoverlay=mcp251xfd,spi1-0,oscillator=20000000,interrupt=4"
-
-# Robot peripherals (match raspios). disable-bt frees the UARTs; expose the
-# extra PL011 UARTs the tools use -- uart2 = ttyAMA2 (mcu-logger), uart4 =
-# ttyAMA4 (detector lidar), uart5 spare. Enable i2c (OLED on i2c-1) and the
-# PCF8523 RTC so the clock is correct without NTP (explains the bogus dates
-# seen so far). The tool containers still need these devices in compose's
-# device list to see them.
-RPI_EXTRA_CONFIG:append = "\ndtoverlay=disable-bt\ndtoverlay=uart2\ndtoverlay=uart4\ndtoverlay=uart5\ndtparam=i2c_arm=on\ndtparam=i2c1=on\ndtoverlay=i2c-rtc,pcf8523"
+# Peripherals (CAN-FD on SPI1, uart2/4/5, i2c1, PCF8523 RTC) are no longer
+# config.txt overlays: with the mainline kernel they are nodes in the board
+# device tree (meta-cogip-bsp linux-stable: bcm2711-rpi-4-b-cogip.dts). The
+# firmware must be told to load that DTB by name -- it is not auto-detected by
+# board model. No dtoverlay= here: mainline ships no RPi overlay set.
+RPI_EXTRA_CONFIG:append = "\ndevice_tree=bcm2711-rpi-4-b-cogip.dtb"
